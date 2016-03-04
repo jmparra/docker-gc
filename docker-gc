@@ -253,7 +253,7 @@ if [[ $FORCE_CONTAINER_REMOVAL -gt 0 ]]; then
 fi
 # Reap containers.
 if [[ $DRY_RUN -gt 0 ]]; then
-    container_log "The following containers would have been removed" containers.reap
+    container_log "The following container would have been removed" containers.reap
 else
     container_log "Removing containers" containers.reap
     xargs -n 1 $DOCKER rm $FORCE_CONTAINER_FLAG --volumes=true < containers.reap &>/dev/null || true
@@ -267,7 +267,7 @@ fi
 
 # Reap images.
 if [[ $DRY_RUN -gt 0 ]]; then
-    container_log "The following images would have been removed" containers.reap
+    image_log "The following image would have been removed" images.reap
 else
     image_log "Removing image" images.reap
     xargs -n 1 $DOCKER rmi $FORCE_IMAGE_FLAG < images.reap &>/dev/null || true
