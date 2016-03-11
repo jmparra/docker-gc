@@ -113,6 +113,15 @@ function compute_exclude_ids() {
     # or imageid".  Also delete blank lines or lines that only contain
     # whitespace
     sed 's/^\(.*\)$/ \1 /' $EXCLUDE_FROM_GC | sed '/^ *$/d' > $PROCESSED_EXCLUDES
+    
+    # Also read EXCLUDE_IMAGES variable and append to excludes
+    if [ -n "$EXCLUDE_IMAGES" ]; then
+        local IFS=','
+        for i in $EXCLUDE_IMAGES; do 
+            echo $i | sed 's/^\(.*\)$/ \1 /' | sed '/^ *$/d' >> $PROCESSED_EXCLUDES
+        done
+    fi
+
     # The following looks a bit of a mess, but here's what it does:
     # 1. Get images
     # 2. Skip header line
@@ -137,6 +146,15 @@ function compute_exclude_container_ids() {
     PROCESSED_EXCLUDES=`cat $EXCLUDE_CONTAINERS_FROM_GC \
         | xargs \
         | sed -e 's/ /\|/g'`
+
+    # Also read EXCLUDE_CONTAINERS variable and append to excludes
+    if [ -n "$EXCLUDE_CONTAINERS" ]; then
+        if [ -n "$PROCESSED_EXCLUDES" ]; then
+            PROCESSED_EXCLUDES+="|"
+        fi
+        PROCESSED_EXCLUDES+=`echo $EXCLUDE_CONTAINERS | sed -e 's/,/\|/g'`
+    fi
+
     # The empty string would match everything
     if [ "$PROCESSED_EXCLUDES" = "" ]; then
         touch $EXCLUDE_CONTAINER_IDS_FILE
