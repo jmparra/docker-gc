@@ -162,8 +162,16 @@ The docker-gc container requires access to the docker socket in order to
 function, so you need to map it when running, e.g.:
 
 ```sh
-$ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc
+$ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro -v /etc:/etc spotify/docker-gc
 ```
 
 The `/etc` directory is also mapped so that it can read any exclude files
 that you've created.
+
+##### Cron job
+
+By default, docker-gc is execute every 1 hour. Set the [`CRON_TIME`](https://en.wikipedia.org/wiki/Cron#Configuration_file) variable to override this default.
+
+```sh
+$ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro -v /etc:/etc -e CRON_TIME="*/10 * * * *" spotify/docker-gc
+```
