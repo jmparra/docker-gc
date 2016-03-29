@@ -17,5 +17,4 @@ RUN chmod +x /bin/wrapper-docker-gc &&  chmod +x /entrypoint.sh
 
 VOLUME /var/lib/docker-gc
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["crond", "-l", "2", "-f"]
+CMD ["/entrypoint.sh"]
