@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine:3.2
+FROM gliderlabs/alpine:3.3
 
 ENV DOCKER_VERSION 1.9.1
 
@@ -9,8 +9,13 @@ RUN apk --update add bash curl \
   && apk del curl \
   && rm -rf /var/cache/apk/*
 
-COPY ./docker-gc /docker-gc
+COPY ./docker-gc /usr/sbin/docker-gc
+COPY ./entrypoint.sh /
+COPY cron/wrapper-docker-gc.sh /bin/wrapper-docker-gc
+
+RUN chmod +x /bin/wrapper-docker-gc &&  chmod +x /entrypoint.sh
 
 VOLUME /var/lib/docker-gc
 
-CMD ["/docker-gc"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["crond", "-l", "2", "-f"]
